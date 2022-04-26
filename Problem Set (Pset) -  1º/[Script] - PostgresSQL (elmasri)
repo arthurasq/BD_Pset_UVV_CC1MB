@@ -1,1 +1,233 @@
+-- Primeira tarefa: Criar Banco de dados 
 
+-- Database: uvv 
+
+-- DROP DATABASE IF EXISTS uvv;
+
+CREATE DATABASE uvv
+    WITH 
+    OWNER = "ArthurAbreu"
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'en_US.UTF-8'
+    LC_CTYPE = 'en_US.UTF-8'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1;
+
+
+-- Segunda tarefa: Criação de usuário
+
+-- Role: "ArthurAbreu"
+
+-- DROP ROLE IF EXISTS "ArthurAbreu";
+
+CREATE ROLE "ArthurAbreu" WITH
+  LOGIN
+  NOSUPERUSER
+  INHERIT
+  CREATEDB
+  NOCREATEROLE
+  NOREPLICATION
+  ENCRYPTED PASSWORD 'SCRAM-SHA-256$4096:w/x5fQwE42JfvnjfLzfR3Q==$3APaXFU5wUL3/MP6lOiPsrdlROTYfKp+r1GukquNhYI=:cM8s/wg3DfUR2chvaJ1Iawdt0Ff2WJonScIRIu1XBMU=';
+
+-- Terceira tarefa: Criação do esquema 
+
+-- SCHEMA: elmasri
+
+-- DROP SCHEMA IF EXISTS elmasri ;
+
+CREATE SCHEMA IF NOT EXISTS elmasri
+    AUTHORIZATION postgres;
+
+-- Quarta tarefa: Ordem de Esquemas
+
+SET SEARCH_PATH TO elmasri, "$user", public;
+
+
+-- Quinta tarefa: Criação das tabelas
+
+-- Table: elmasri.funcionario
+
+-- DROP TABLE IF EXISTS elmasri.funcionario;
+
+CREATE TABLE IF NOT EXISTS elmasri.funcionario
+(
+    cpf character(11) COLLATE pg_catalog."default" NOT NULL,
+    primeiro_nome character varying(15) COLLATE pg_catalog."default" NOT NULL,
+    nome_meio character(1) COLLATE pg_catalog."default",
+    ultimo_nome character varying(15) COLLATE pg_catalog."default" NOT NULL,
+    data_nascimento date,
+    endereco character varying(60) COLLATE pg_catalog."default",
+    sexo character(1) COLLATE pg_catalog."default",
+    salario numeric(10,2),
+    cpf_supervisor character(11) COLLATE pg_catalog."default" NOT NULL,
+    numero_departamento integer NOT NULL,
+    CONSTRAINT cpf_ PRIMARY KEY (cpf),
+    CONSTRAINT fk_departamento FOREIGN KEY (numero_departamento)
+        REFERENCES elmasri.departamento (numero_departamento) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT funcionario_funcionario_fk FOREIGN KEY (cpf_supervisor)
+        REFERENCES elmasri.funcionario (cpf) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS elmasri.funcionario
+    OWNER to postgres;
+-- Index: fk_fk_departamento
+
+-- DROP INDEX IF EXISTS elmasri.fk_fk_departamento;
+
+CREATE INDEX IF NOT EXISTS fk_fk_departamento
+    ON elmasri.funcionario USING btree
+    (numero_departamento ASC NULLS LAST)
+    TABLESPACE pg_default;
+-- Index: fki_funcionario_funcionario_fk
+
+-- DROP INDEX IF EXISTS elmasri.fki_funcionario_funcionario_fk;
+
+CREATE INDEX IF NOT EXISTS fki_funcionario_funcionario_fk
+    ON elmasri.funcionario USING btree
+    (cpf_supervisor COLLATE pg_catalog."default" ASC NULLS LAST)
+    TABLESPACE pg_default;
+
+
+-- Table: elmasri.departamento
+
+-- DROP TABLE IF EXISTS elmasri.departamento;
+
+CREATE TABLE IF NOT EXISTS elmasri.departamento
+(
+    numero_departamento integer NOT NULL,
+    nome_departamento_ character varying(15) COLLATE pg_catalog."default" NOT NULL DEFAULT nextval('elmasri.departamento__nome_departamento__seq'::regclass),
+    cpf_gerente character(11) COLLATE pg_catalog."default" NOT NULL,
+    data_inicio_gerente_ date,
+    CONSTRAINT departamento_pk PRIMARY KEY (numero_departamento),
+    CONSTRAINT fk_cpf_gerente FOREIGN KEY (cpf_gerente)
+        REFERENCES elmasri.funcionario (cpf) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS elmasri.departamento
+    OWNER to postgres;
+-- Index: fki_fk_cpf_gerente
+
+-- DROP INDEX IF EXISTS elmasri.fki_fk_cpf_gerente;
+
+CREATE INDEX IF NOT EXISTS fki_fk_cpf_gerente
+    ON elmasri.departamento USING btree
+    (cpf_gerente COLLATE pg_catalog."default" ASC NULLS LAST)
+    TABLESPACE pg_default;
+-- Index: nome_departamento__idx
+
+-- DROP INDEX IF EXISTS elmasri.nome_departamento__idx;
+
+CREATE UNIQUE INDEX IF NOT EXISTS nome_departamento__idx
+    ON elmasri.departamento USING btree
+    (nome_departamento_ COLLATE pg_catalog."default" ASC NULLS LAST)
+    TABLESPACE pg_default;
+
+-- Table: elmasri.localizacoes_departamento_
+
+-- DROP TABLE IF EXISTS elmasri.localizacoes_departamento_;
+
+CREATE TABLE IF NOT EXISTS elmasri.localizacoes_departamento_
+(
+    numero_departamento integer NOT NULL,
+    local character varying(15) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT localizacoes_departamento PRIMARY KEY (numero_departamento, local),
+    CONSTRAINT departamento__localizacoes_departamento__fk FOREIGN KEY (numero_departamento)
+        REFERENCES elmasri.departamento (numero_departamento) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS elmasri.localizacoes_departamento_
+    OWNER to postgres;
+
+
+-- Table: elmasri.projeto_
+
+-- DROP TABLE IF EXISTS elmasri.projeto_;
+
+CREATE TABLE IF NOT EXISTS elmasri.projeto_
+(
+    numero_projeto integer NOT NULL,
+    nome_projeto character varying(15) COLLATE pg_catalog."default" NOT NULL,
+    local_projeto character varying(15) COLLATE pg_catalog."default",
+    numero_departamento integer NOT NULL,
+    CONSTRAINT projeto_pk PRIMARY KEY (numero_projeto),
+    CONSTRAINT departamento__projeto__fk FOREIGN KEY (numero_departamento)
+        REFERENCES elmasri.departamento (numero_departamento) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS elmasri.projeto_
+    OWNER to postgres;
+-- Index: nome_projeto__idx
+
+-- DROP INDEX IF EXISTS elmasri.nome_projeto__idx;
+
+CREATE UNIQUE INDEX IF NOT EXISTS nome_projeto__idx
+    ON elmasri.projeto_ USING btree
+    (nome_projeto COLLATE pg_catalog."default" ASC NULLS LAST)
+    TABLESPACE pg_default;
+
+
+-- Table: elmasri.dependente_
+
+-- DROP TABLE IF EXISTS elmasri.dependente_;
+
+CREATE TABLE IF NOT EXISTS elmasri.dependente_
+(
+    cpf_supervisor character(11) COLLATE pg_catalog."default" NOT NULL,
+    nome_dependente_ character varying(15) COLLATE pg_catalog."default" NOT NULL,
+    sexo character(1) COLLATE pg_catalog."default",
+    data_nascimento date,
+    parentesco character varying(15) COLLATE pg_catalog."default",
+    CONSTRAINT cpf_funcionario_ PRIMARY KEY (cpf_supervisor, nome_dependente_),
+    CONSTRAINT funcionario__dependente__fk FOREIGN KEY (cpf_supervisor)
+        REFERENCES elmasri.funcionario (cpf) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS elmasri.dependente_
+    OWNER to postgres;
+
+
+-- Table: elmasri.dependente_
+
+-- DROP TABLE IF EXISTS elmasri.dependente_;
+
+CREATE TABLE IF NOT EXISTS elmasri.dependente_
+(
+    cpf_supervisor character(11) COLLATE pg_catalog."default" NOT NULL,
+    nome_dependente_ character varying(15) COLLATE pg_catalog."default" NOT NULL,
+    sexo character(1) COLLATE pg_catalog."default",
+    data_nascimento date,
+    parentesco character varying(15) COLLATE pg_catalog."default",
+    CONSTRAINT cpf_funcionario_ PRIMARY KEY (cpf_supervisor, nome_dependente_),
+    CONSTRAINT funcionario__dependente__fk FOREIGN KEY (cpf_supervisor)
+        REFERENCES elmasri.funcionario (cpf) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS elmasri.dependente_
+    OWNER to postgres;
