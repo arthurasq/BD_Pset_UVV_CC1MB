@@ -1,6 +1,6 @@
 <changeSet author="CHANGEME" id="CHANGEME">
 <createTable tableName="funcionario">
-  <column name="_cpf" type="CHAR(11)">
+  <column name="cpf" type="CHAR(11)">
     <constraints nullable="false"/>
   </column>
   <column name="primeiro_nome" type="VARCHAR(15)">
@@ -14,26 +14,26 @@
   <column name="endereco" type="VARCHAR(30)"/>
   <column name="sexo" type="CHAR(1)"/>
   <column name="salario" type="DECIMAL(10,2)"/>
-  <column name="cpf_supervisor_" type="CHAR(11)">
+  <column name="cpf_supervisor" type="CHAR(11)">
     <constraints nullable="false"/>
   </column>
   <column name="numero_departamento" type="INTEGER">
     <constraints nullable="false"/>
   </column>
 </createTable>
-<addPrimaryKey tableName="funcionario" constraintName="cpf_" columnNames="_cpf"/>
+<addPrimaryKey tableName="funcionario" constraintName="cpf" columnNames="_cpf"/>
 
 <createTable tableName="departamento">
   <column name="numero_departamento" type="INTEGER">
     <constraints nullable="false"/>
   </column>
-  <column name="nome_departamento_" type="VARCHAR(15)" autoIncrement="true">
+  <column name="nome_departamento" type="VARCHAR(15)" autoIncrement="true">
     <constraints nullable="false"/>
   </column>
-  <column name="cpf_gerente_" type="CHAR(11)">
+  <column name="cpf_gerente" type="CHAR(11)">
     <constraints nullable="false"/>
   </column>
-  <column name="data_inicio_gerente_" type="DATE"/>
+  <column name="data_inicio_gerente" type="DATE"/>
 </createTable>
 <addPrimaryKey tableName="departamento" constraintName="departamento_pk" columnNames="numero_departamento"/>
 <createSequence sequenceName="departamento _nome_departamento _seq"/>
@@ -46,18 +46,18 @@
   <column name="numero_projeto" type="INTEGER">
     <constraints nullable="false"/>
   </column>
-  <column name="nome_projeto_" type="VARCHAR(15)">
+  <column name="nome_projeto" type="VARCHAR(15)">
     <constraints nullable="false"/>
   </column>
-  <column name="local_projeto_" type="VARCHAR(15)"/>
+  <column name="local_projeto" type="VARCHAR(15)"/>
   <column name="numero_departamento" type="INTEGER">
     <constraints nullable="false"/>
   </column>
 </createTable>
-<addPrimaryKey tableName="projeto_" constraintName="projeto_pk" columnNames="numero_projeto"/>
+<addPrimaryKey tableName="projeto" constraintName="projeto_pk" columnNames="numero_projeto"/>
 
-<createIndex tableName="projeto_" indexName="nome_projeto__idx" unique="true">
-  <column name="nome_projeto_"/>
+<createIndex tableName="projeto" indexName="nome_projeto__idx" unique="true">
+  <column name="nome_projeto"/>
 </createIndex>
 
 <createTable tableName="trabalha_em">
@@ -73,7 +73,7 @@
 </createTable>
 
 <createTable tableName="localizacoes_departamento_">
-  <column name="numero_departamento_" type="INTEGER">
+  <column name="numero_departamento" type="INTEGER">
     <constraints nullable="false"/>
   </column>
   <column name="local" type="VARCHAR(15)">
@@ -85,7 +85,7 @@
   <column name="cpf_supervisor" type="CHAR(11)">
     <constraints nullable="false"/>
   </column>
-  <column name="nome_dependente_" type="VARCHAR(15)">
+  <column name="nome_dependente" type="VARCHAR(15)">
     <constraints nullable="false"/>
   </column>
   <column name="sexo" type="CHAR(1)"/>
