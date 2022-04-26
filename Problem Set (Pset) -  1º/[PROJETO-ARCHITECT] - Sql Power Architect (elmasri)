@@ -1,1 +1,111 @@
+<changeSet author="CHANGEME" id="CHANGEME">
+<createTable tableName="funcionario">
+  <column name="_cpf" type="CHAR(11)">
+    <constraints nullable="false"/>
+  </column>
+  <column name="primeiro_nome" type="VARCHAR(15)">
+    <constraints nullable="false"/>
+  </column>
+  <column name="nome_meio" type="CHAR(1)"/>
+  <column name="ultimo_nome" type="VARCHAR(15)">
+    <constraints nullable="false"/>
+  </column>
+  <column name="data_nascimento" type="DATE"/>
+  <column name="endereco" type="VARCHAR(30)"/>
+  <column name="sexo" type="CHAR(1)"/>
+  <column name="salario" type="DECIMAL(10,2)"/>
+  <column name="cpf_supervisor_" type="CHAR(11)">
+    <constraints nullable="false"/>
+  </column>
+  <column name="numero_departamento" type="INTEGER">
+    <constraints nullable="false"/>
+  </column>
+</createTable>
+<addPrimaryKey tableName="funcionario" constraintName="cpf_" columnNames="_cpf"/>
 
+<createTable tableName="departamento">
+  <column name="numero_departamento" type="INTEGER">
+    <constraints nullable="false"/>
+  </column>
+  <column name="nome_departamento_" type="VARCHAR(15)" autoIncrement="true">
+    <constraints nullable="false"/>
+  </column>
+  <column name="cpf_gerente_" type="CHAR(11)">
+    <constraints nullable="false"/>
+  </column>
+  <column name="data_inicio_gerente_" type="DATE"/>
+</createTable>
+<addPrimaryKey tableName="departamento" constraintName="departamento_pk" columnNames="numero_departamento"/>
+<createSequence sequenceName="departamento _nome_departamento _seq"/>
+
+<createIndex tableName="departamento" indexName="nome_departamento__idx" unique="true">
+  <column name="nome_departamento_"/>
+</createIndex>
+
+<createTable tableName="projeto_">
+  <column name="numero_projeto" type="INTEGER">
+    <constraints nullable="false"/>
+  </column>
+  <column name="nome_projeto_" type="VARCHAR(15)">
+    <constraints nullable="false"/>
+  </column>
+  <column name="local_projeto_" type="VARCHAR(15)"/>
+  <column name="numero_departamento" type="INTEGER">
+    <constraints nullable="false"/>
+  </column>
+</createTable>
+<addPrimaryKey tableName="projeto_" constraintName="projeto_pk" columnNames="numero_projeto"/>
+
+<createIndex tableName="projeto_" indexName="nome_projeto__idx" unique="true">
+  <column name="nome_projeto_"/>
+</createIndex>
+
+<createTable tableName="trabalha_em">
+  <column name="cpf_funcionario" type="CHAR(11)">
+    <constraints nullable="false"/>
+  </column>
+  <column name="numero_projeto" type="INTEGER">
+    <constraints nullable="false"/>
+  </column>
+  <column name="horas" type="DECIMAL(3,1)">
+    <constraints nullable="false"/>
+  </column>
+</createTable>
+
+<createTable tableName="localizacoes_departamento_">
+  <column name="numero_departamento_" type="INTEGER">
+    <constraints nullable="false"/>
+  </column>
+  <column name="local" type="VARCHAR(15)">
+    <constraints nullable="false"/>
+  </column>
+</createTable>
+
+<createTable tableName="dependente_">
+  <column name="cpf_supervisor" type="CHAR(11)">
+    <constraints nullable="false"/>
+  </column>
+  <column name="nome_dependente_" type="VARCHAR(15)">
+    <constraints nullable="false"/>
+  </column>
+  <column name="sexo" type="CHAR(1)"/>
+  <column name="data_nascimento" type="DATE"/>
+  <column name="parentesco" type="VARCHAR(15)"/>
+</createTable>
+
+<addForeignKeyConstraint baseTableName="funcionario" constraintName="funcionario__funcionario__fk" baseColumnNames="cpf_supervisor_" referencedTableName="funcionario" referencedColumnNames="_cpf"/>
+
+<addForeignKeyConstraint baseTableName="dependente_" constraintName="funcionario__dependente__fk" baseColumnNames="cpf_supervisor" referencedTableName="funcionario" referencedColumnNames="_cpf"/>
+
+<addForeignKeyConstraint baseTableName="departamento" constraintName="funcionario__departamento__fk" baseColumnNames="cpf_gerente_" referencedTableName="funcionario" referencedColumnNames="_cpf"/>
+
+<addForeignKeyConstraint baseTableName="trabalha_em" constraintName="funcionario__trabalha_em_fk" baseColumnNames="cpf_funcionario" referencedTableName="funcionario" referencedColumnNames="_cpf"/>
+
+<addForeignKeyConstraint baseTableName="localizacoes_departamento_" constraintName="departamento__localizacoes_departamento__fk" baseColumnNames="numero_departamento_" referencedTableName="departamento" referencedColumnNames="numero_departamento"/>
+
+<addForeignKeyConstraint baseTableName="projeto_" constraintName="departamento__projeto__fk" baseColumnNames="numero_departamento" referencedTableName="departamento" referencedColumnNames="numero_departamento"/>
+
+<addForeignKeyConstraint baseTableName="funcionario" constraintName="departamento__funcionario__fk" baseColumnNames="numero_departamento" referencedTableName="departamento" referencedColumnNames="numero_departamento"/>
+
+<addForeignKeyConstraint baseTableName="trabalha_em" constraintName="projeto__trabalha_em_fk" baseColumnNames="numero_projeto" referencedTableName="projeto_" referencedColumnNames="numero_projeto"/>
+</changeSet>
