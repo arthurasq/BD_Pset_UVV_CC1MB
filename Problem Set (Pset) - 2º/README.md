@@ -1,9 +1,11 @@
 ## Pset 2 - Informações a respeito do Trabalho.
-TURMA: CC1MB 
-
 FEITO POR: Arthur Abreu Sarcinelli 
 
-Auxiliado por blogs americanos, vídeos no youtube, fóruns e websites de Linguagem Sql
+TURMA: CC1MB 
+
+PROFESSOR: Abrantes Araújo Silva Filho 
+
+Auxiliado por blogs, fóruns e websites de Linguagem SQL
 
 ### ARQUIVOS
 
